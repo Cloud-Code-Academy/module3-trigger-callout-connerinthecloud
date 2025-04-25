@@ -7,19 +7,18 @@ public with sharing class NewsAPIService {
     private static final String API_ENDPOINT = '/v2/top-headlines';
     
     // TODO: Define default parameters
-    private static final Integer DEFAULT_PAGE_SIZE = 20; 
+    private static final Integer PAGE_SIZE = 20; 
     
     /**
      * Fetches top headlines for a specified category with pagination support
      * @param category The news category (business, entertainment, general, health, science, sports, technology)
-     * @param pageSize Number of results per page (default: 20, max: 100)
      * @param page Page number for pagination
      * @return NewsAPIResponse The wrapper object containing the API response
      */
-    public static NewsAPIResponse getTopHeadlinesByCategory(String category, Integer pageSize, Integer page) {
+    public static NewsAPIResponse getTopHeadlinesByCategory(String category, Integer page) {
         // TODO: Implement method to fetch headlines by category
-        // - Validate and set defaults for parameters
-        // - Build the request URL
+        // - Validate parameters
+        // - Build the request URL with fixed page size
         // - Make the callout
         // - Parse and return the response
         

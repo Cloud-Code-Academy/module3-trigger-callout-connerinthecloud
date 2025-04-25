@@ -12,20 +12,11 @@ public class NewsAPIResponse {
      */
     public class Article {
         // TODO: Define article fields
-        
-        /**
-         * Converts the API article to a Salesforce Article__c record
-         * @return Article__c The Salesforce record
-         */
-        public Article__c toSObject() {
-            // TODO: Implement conversion from API article to Salesforce record
-            // Consider:
-            // - Handling date conversion
-            // - Generating a unique record name
-            // - Handling field length limits
-            
-            return null;
-        }
+        // Example fields:
+        // public String title { get; set; }
+        // public String description { get; set; }
+        // public String url { get; set; }
+        // etc.
     }
     
     /**
@@ -33,14 +24,24 @@ public class NewsAPIResponse {
      */
     public class Source {
         // TODO: Define source fields
+        // Example fields:
+        // public String id { get; set; }
+        // public String name { get; set; }
     }
     
     /**
-     * Helper method to convert all articles in this response to Salesforce records
-     * @return List<Article__c> List of Salesforce records
+     * Static method to convert an API article to a Salesforce Article__c record
+     * @param apiArticle The API article to convert
+     * @return Article__c The Salesforce record
      */
-    public List<Article__c> toSObjects() {
-        // TODO: Implement conversion of all articles to Salesforce records
+    public static Article__c convertToSObject(Article apiArticle) {
+        // TODO: Implement conversion from API article to Salesforce record
+        // Consider:
+        // - Generating a unique record name
+        // - Setting article fields from the API response
+        // - Handling content length limits if needed
+        // - Handling date conversion
+        
         return null;
     }
 } 
