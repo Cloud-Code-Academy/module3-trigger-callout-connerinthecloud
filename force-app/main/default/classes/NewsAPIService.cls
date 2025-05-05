@@ -44,7 +44,7 @@ public with sharing class NewsAPIService {
 
         try {
             response = http.send(request);
-            if (response.getStatusCode() > 200 || response.getStatusCode() > 299) {
+            if (response.getStatusCode() < 200 || response.getStatusCode() > 299) {
  
                 String errorMessage = 'Error retrieving headlines from NewsAPI:' + response.getStatusCode() + ' Message: ' + response.getBody();
                 Logger.error(errorMessage);
