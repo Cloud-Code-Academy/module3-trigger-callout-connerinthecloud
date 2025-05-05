@@ -4,6 +4,8 @@
 public with sharing class NewsCategoryTriggerHandler {
 
     private static List<News_Category__c> categoriesToSync;
+
+    private static List<String> validCategories = new List<String>{'business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'};
     
     /**
      * Handles after insert events for News_Category__c
@@ -13,7 +15,7 @@ public with sharing class NewsCategoryTriggerHandler {
     public static void handleInsert(List<News_Category__c> newRecords) {
         categoriesToSync = new List<News_Category__c>();
         for (News_Category__c category : newRecords) {
-            if (category.Sync__c) {
+            if (isCategoryValid(category.Name) && category.Sync__c) {
                 categoriesToSync.add(category);
             }
         }
@@ -33,7 +35,7 @@ public with sharing class NewsCategoryTriggerHandler {
         categoriesToSync = new List<News_Category__c>();
 
         for (News_Category__c category : newRecords) {
-            if (category.Sync__c && !oldMap.get( category.Id ).Sync__c) {
+            if (isCategoryValid(category.Name) && category.Sync__c && !oldMap.get( category.Id ).Sync__c) {
                 categoriesToSync.add( category );
             }
         }
@@ -50,6 +52,21 @@ public with sharing class NewsCategoryTriggerHandler {
     private static void syncCategoriesWithQueueable(List<News_Category__c> categoriesToSync) {
         for (News_Category__c category : categoriesToSync) {
             System.enqueueJob(new NewsCategoryQueueable( category, 1 ));
+        }
+    }
+
+    /**
+     * Helper method to check if the category is valid
+     * @param categoryName Name of the category to validate
+     * @return True if the category is valid, false otherwise
+     */
+    private static Boolean isCategoryValid(String categoryName) {
+        if (String.isNotBlank(categoryName) && validCategories.contains(categoryName.toLowerCase())) {
+            return true;
+        } else {
+            Logger.error('Invalid category ' + categoryName);
+            Logger.saveLog();
+            return false;
         }
     }
 } 
