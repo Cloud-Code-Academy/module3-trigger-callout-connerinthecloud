@@ -2,6 +2,8 @@
  * Handler class for NewsCategoryTrigger
  */
 public with sharing class NewsCategoryTriggerHandler {
+
+    private static List<News_Category__c> categoriesToSync;
     
     /**
      * Handles after insert events for News_Category__c
@@ -9,9 +11,16 @@ public with sharing class NewsCategoryTriggerHandler {
      * @param newRecords List of newly inserted News_Category__c records
      */
     public static void handleInsert(List<News_Category__c> newRecords) {
-        // TODO: Implement insert handler
-        // - Filter categories that need to be synced (Sync__c = true)
-        // - Call queueable method for callouts
+        categoriesToSync = new List<News_Category__c>();
+        for (News_Category__c category : newRecords) {
+            if (category.Sync__c) {
+                categoriesToSync.add(category);
+            }
+        }
+
+        if (!categoriesToSync.isEmpty() && categoriesToSync.size() > 0) {
+            syncCategoriesWithQueueable(categoriesToSync);
+        }
     }
     
     /**
@@ -21,9 +30,17 @@ public with sharing class NewsCategoryTriggerHandler {
      * @param oldMap Map of old record states
      */
     public static void handleUpdate(List<News_Category__c> newRecords, Map<Id, News_Category__c> oldMap) {
-        // TODO: Implement update handler
-        // - Filter categories that need to be synced (Sync__c changed from false to true)
-        // - Call queueable method for callouts
+        categoriesToSync = new List<News_Category__c>();
+
+        for (News_Category__c category : newRecords) {
+            if (category.Sync__c && !oldMap.get( category.Id ).Sync__c) {
+                categoriesToSync.add( category );
+            }
+        }
+ 
+        if (!categoriesToSync.isEmpty() && categoriesToSync.size() > 0) {
+            syncCategoriesWithQueueable( categoriesToSync );
+        }
     }
     
     /**
@@ -31,7 +48,8 @@ public with sharing class NewsCategoryTriggerHandler {
      * @param categoriesToSync List of News_Category__c records to sync
      */
     private static void syncCategoriesWithQueueable(List<News_Category__c> categoriesToSync) {
-        // TODO: Implement queueable job enqueuing
-        // - Create and enqueue NewsCategoryQueueable job for each category
+        for (News_Category__c category : categoriesToSync) {
+            System.enqueueJob(new NewsCategoryQueueable( category, 1 ));
+        }
     }
 } 
