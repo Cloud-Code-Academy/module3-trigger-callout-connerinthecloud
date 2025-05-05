@@ -2,7 +2,6 @@
  * Wrapper class for parsing the NewsAPI response
  */
 public class NewsAPIResponse {
-    // TODO: Define fields to match the NewsAPI response structure
     public String status { get; set; }
     public Integer totalResults { get; set; }
     public List<Article> articles { get; set; }
@@ -11,36 +10,40 @@ public class NewsAPIResponse {
      * Inner class representing a news article
      */
     public class Article {
-        // TODO: Define article fields
-        
-        /**
-         * Converts the API article to a Salesforce Article__c record
-         * @return Article__c The Salesforce record
-         */
-        public Article__c toSObject() {
-            // TODO: Implement conversion from API article to Salesforce record
-            // Consider:
-            // - Handling date conversion
-            // - Generating a unique record name
-            // - Handling field length limits
-            
-            return null;
-        }
+        public Source source;
+        public String author;
+        public String title;
+        public String description;
+        public String url;
+        public String urlToImage;
+        public DateTime publishedAt;
+        public String content;
     }
     
     /**
      * Inner class representing a news source
      */
     public class Source {
-        // TODO: Define source fields
+        public String id;
+        public String name;
     }
     
     /**
-     * Helper method to convert all articles in this response to Salesforce records
-     * @return List<Article__c> List of Salesforce records
+     * Static method to convert an API article to a Salesforce Article__c record
+     * @param apiArticle The API article to convert
+     * @return Article__c The Salesforce record
      */
-    public List<Article__c> toSObjects() {
-        // TODO: Implement conversion of all articles to Salesforce records
-        return null;
+    public static Article__c convertToSObject(Article apiArticle) {
+        Article__c article = new Article__c();
+        article.Name = apiArticle.title.left(80);
+        article.Author__c = apiArticle.author;
+        article.Title__c = apiArticle.title;
+        article.Description__c = apiArticle.description;
+        article.url__c = apiArticle.url;
+        article.urlToImage__c = (apiArticle.urlToImage != null && apiArticle.urlToImage.length() > 255) ? apiArticle.urlToImage.substring(0, 255) : apiArticle.urlToImage;
+        article.published_At__c = apiArticle.publishedAt;
+        article.Content__c = (apiArticle.content != null && apiArticle.content.length() > 32000) ? apiArticle.content.substring(0, 32000) : apiArticle.content;
+        
+        return article;
     }
 } 
