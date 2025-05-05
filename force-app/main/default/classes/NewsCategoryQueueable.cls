@@ -24,12 +24,11 @@ public class NewsCategoryQueueable implements Queueable, Database.AllowsCallouts
      */
     public void execute(QueueableContext context) {
         News_Category__c updatedCategory = new News_Category__c(Id = category.Id);
-        News_Category__c cat = [select name, last_synced__c from News_Category__c where id = :category.id];
 
         try {
             NewsAPIResponse response = NewsAPIService.getTopHeadlinesByCategory(category.Name, currentPage);
             List<Article__c> articlesToInsert = new List<Article__c>();
-            Integer index = 1;
+            
             for (NewsApiResponse.Article apiArticle :response.articles) {
                 Article__c article = NewsApiResponse.convertToSObject(apiArticle);
                 article.News_Category__c = category.Id;
